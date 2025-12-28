@@ -96,7 +96,7 @@ test-*.json
 
 test[._][1-9]*.py
 
-[1-5].py
+#[1-5].py
 
 extracted_images
 
