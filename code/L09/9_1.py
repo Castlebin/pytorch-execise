@@ -26,6 +26,11 @@ transform = transforms.Compose([
 train_dataset = datasets.MNIST(root='../dataset/mnist/', train=True, download=True, transform=transform)
 test_dataset = datasets.MNIST(root='../dataset/mnist/', train=False, download=True, transform=transform)
 
+# 看一下数据集大小
+print(f"训练数据集大小: {len(train_dataset)}，样本形状：{train_dataset[0][0].shape}")
+print(f"测试数据集大小: {len(test_dataset)}，样本形状：{test_dataset[0][0].shape}")
+
+
 # 4. 创建 DataLoader
 batch_size = 64
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -82,24 +87,34 @@ class Net(nn.Module):
         self.fc2 = nn.Linear(128, 10)
 
     def forward(self, x):
-        x = self.conv1(x)
-        x = F.relu(x)
-        x = self.conv2(x)
-        x = F.relu(x)
-        x = F.max_pool2d(x, 2) # 池化层
-        x = self.dropout1(x)
-        x = torch.flatten(x, 1) # 展平
-        x = self.fc1(x)
-        x = F.relu(x)
-        x = self.dropout2(x)
-        x = self.fc2(x)
-        output = F.log_softmax(x, dim=1) # 输出概率对数
+        h = self.conv1(x)
+        h = F.relu(h)
+
+        h = self.conv2(h)
+        h = F.relu(h)
+
+        h = F.max_pool2d(h, 2) # 池化层
+
+        h = self.dropout1(h)
+
+        h = torch.flatten(h, 1) # 展平
+
+        h = self.fc1(h)
+        h = F.relu(h)
+
+        h = self.dropout2(h)
+
+        h = self.fc2(h)
+
+        output = F.log_softmax(h, dim=1) # 输出概率对数
         return output
 
 # 实例化模型并移至设备
 model = Net().to(device)
-# 定义优化器
+
+# 定义优化器 和 损失函数
 optimizer = optim.Adam(model.parameters(), lr=0.001)
+loss_fn = nn.NLLLoss()
 
 
 # %% 第四步：定义训练和测试函数
@@ -116,7 +131,7 @@ def train(model, device, train_loader, optimizer, epoch):
 
         data, target = data.to(device), target.to(device)
         output = model(data)  # 前向传播
-        loss = F.nll_loss(output, target)  # 计算损失
+        loss = loss_fn(output, target)  # 计算损失
         loss.backward()  # 反向传播
         optimizer.step()  # 更新参数
 
