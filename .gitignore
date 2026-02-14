@@ -103,4 +103,5 @@ extracted_images
 
 
 
-/code/dataset/mnist/MNIST/
+MNIST
+dxdiag.txt
