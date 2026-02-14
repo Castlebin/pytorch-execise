@@ -1,17 +1,26 @@
 # 使用 Pytorch 中的 MINST 数据集进行图像分类 （手写数字识别）
+# 使用 卷积神经网络 (CNN)
+
+import os
 
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from dl_d2l.util import colab_util
+from dl_d2l.util import device_util
 from torchvision import datasets, transforms
+
+base_data_dir = colab_util.get_base_data_dir()
+datasets_dir = os.path.join(base_data_dir, 'ML', 'Datasets')
+os.makedirs(datasets_dir, exist_ok=True)
+print(f'datasets dir: {datasets_dir}')
 
 # %% 第一步：环境准备与数据加载
 
 # 1. 设置设备 (优先使用 GPU/MPS，否则使用 CPU)
-device = torch.device("cuda" if torch.cuda.is_available() else
-                      "mps" if torch.backends.mps.is_available() else "cpu")
+device = device_util.get_available_device()
 print(f"Using device: {device}")
 
 # 2. 定义数据转换
@@ -23,13 +32,12 @@ transform = transforms.Compose([
 ])
 
 # 3. 下载并加载数据集
-train_dataset = datasets.MNIST(root='../dataset/mnist/', train=True, download=True, transform=transform)
-test_dataset = datasets.MNIST(root='../dataset/mnist/', train=False, download=True, transform=transform)
+train_dataset = datasets.MNIST(root=datasets_dir, train=True, download=True, transform=transform)
+test_dataset = datasets.MNIST(root=datasets_dir, train=False, download=True, transform=transform)
 
 # 看一下数据集大小
 print(f"训练数据集大小: {len(train_dataset)}，样本形状：{train_dataset[0][0].shape}")
 print(f"测试数据集大小: {len(test_dataset)}，样本形状：{test_dataset[0][0].shape}")
-
 
 # 4. 创建 DataLoader
 batch_size = 64
@@ -93,11 +101,11 @@ class Net(nn.Module):
         h = self.conv2(h)
         h = F.relu(h)
 
-        h = F.max_pool2d(h, 2) # 池化层
+        h = F.max_pool2d(h, 2)  # 池化层
 
         h = self.dropout1(h)
 
-        h = torch.flatten(h, 1) # 展平
+        h = torch.flatten(h, 1)  # 展平
 
         h = self.fc1(h)
         h = F.relu(h)
@@ -106,8 +114,9 @@ class Net(nn.Module):
 
         h = self.fc2(h)
 
-        output = F.log_softmax(h, dim=1) # 输出概率对数
+        output = F.log_softmax(h, dim=1)  # 输出概率对数
         return output
+
 
 # 实例化模型并移至设备
 model = Net().to(device)
@@ -116,10 +125,10 @@ model = Net().to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 loss_fn = nn.NLLLoss()
 
-
 # %% 第四步：定义训练和测试函数
-train_losses = [] # 记录每个epoch的平均loss
-test_accuracies = [] # 记录每个epoch的测试准确率
+train_losses = []  # 记录每个 epoch 的平均 loss
+test_accuracies = []  # 记录每个epoch的测试准确率
+
 
 def train(model, device, train_loader, optimizer, epoch):
     model.train()  # 切换到训练模式
@@ -177,13 +186,14 @@ for epoch in range(1, epochs + 1):
     train(model, device, train_loader, optimizer, epoch)
     test(model, device, test_loader)
 
+
 # 可视化训练过程中的 Loss 和 Accuracy 变化
 def plot_training_history(train_losses, test_accuracies):
     plt.figure(figsize=(12, 5))
 
     # 子图 1: 训练 Loss 变化
     plt.subplot(1, 2, 1)
-    plt.plot(range(1, len(train_losses)+1), train_losses, marker='o', color='blue', label='Train Loss')
+    plt.plot(range(1, len(train_losses) + 1), train_losses, marker='o', color='blue', label='Train Loss')
     plt.title('Training Loss over Epochs')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
@@ -192,7 +202,7 @@ def plot_training_history(train_losses, test_accuracies):
 
     # 子图 2: 测试 Accuracy 变化
     plt.subplot(1, 2, 2)
-    plt.plot(range(1, len(test_accuracies)+1), test_accuracies, marker='s', color='orange', label='Test Accuracy')
+    plt.plot(range(1, len(test_accuracies) + 1), test_accuracies, marker='s', color='orange', label='Test Accuracy')
     plt.title('Test Accuracy over Epochs')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy (%)')
@@ -201,6 +211,7 @@ def plot_training_history(train_losses, test_accuracies):
 
     plt.tight_layout()
     plt.show()
+
 
 # 调用绘图函数
 plot_training_history(train_losses, test_accuracies)
@@ -261,4 +272,3 @@ visualize_predictions(model, device, test_loader)
 
 可视化: 结合 matplotlib 可以直观地看到模型在哪里犯了错（如果有红色的标题）。
 '''
-
