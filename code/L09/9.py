@@ -1,6 +1,7 @@
 # 9. 多分类问题 (示例：识别 手写数字输入 (MNIST 数据集))
 
 import os
+import time
 
 import torch
 import torch.nn.functional as F
@@ -102,5 +103,8 @@ def test():
 
 if __name__ == '__main__':
     for epoch in range(10):
+        start_time = time.time()
         train(epoch)
+        print(f'epoch {epoch + 1}, train cost time: {time.time() - start_time} s')
+        
         test()
