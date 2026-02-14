@@ -2,6 +2,7 @@
 # 使用 卷积神经网络 (CNN)
 
 import os
+import time
 
 import matplotlib.pyplot as plt
 import torch
@@ -181,7 +182,10 @@ def test(model, device, test_loader):
 # 建议至少训练 5-10 轮以看到明显曲线 (虽然通常 3 轮之后准确率就已经很高了)
 epochs = 10
 for epoch in range(1, epochs + 1):
+    start_time = time.time()
     train(model, device, train_loader, optimizer, epoch)
+    print(f'epoch {epoch + 1}, train cost time: {time.time() - start_time} s, device: {device}')
+    
     test(model, device, test_loader)
 
 
