@@ -18,7 +18,6 @@ os.makedirs(datasets_dir, exist_ok=True)
 print(f'datasets dir: {datasets_dir}')
 
 # %% 第一步：环境准备与数据加载
-
 # 1. 设置设备 (优先使用 GPU/MPS，否则使用 CPU)
 device = device_util.get_available_device()
 print(f"Using device: {device}")
@@ -122,8 +121,8 @@ class Net(nn.Module):
 model = Net().to(device)
 
 # 定义优化器 和 损失函数
-optimizer = optim.Adam(model.parameters(), lr=0.001)
 loss_fn = nn.NLLLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # %% 第四步：定义训练和测试函数
 train_losses = []  # 记录每个 epoch 的平均 loss
@@ -179,8 +178,7 @@ def test(model, device, test_loader):
 
 
 # %% 第五步：开始训练
-# 为了演示，我们只训练 3 个 Epoch（轮次），这通常足以在 MNIST 上达到 98% 以上的准确率。
-# epochs = 5 # 建议至少训练 5-10 轮以看到明显曲线
+# 建议至少训练 5-10 轮以看到明显曲线 (虽然通常 3 轮之后准确率就已经很高了)
 epochs = 10
 for epoch in range(1, epochs + 1):
     train(model, device, train_loader, optimizer, epoch)
