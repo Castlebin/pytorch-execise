@@ -44,12 +44,13 @@ class Net(torch.nn.Module):
         x = F.relu(self.l2(x))
         x = F.relu(self.l3(x))
         x = F.relu(self.l4(x))
-        return self.l5(x)  # 最后一层不做激活，不进行非线性变换
+        return self.l5(x)  # 最后一层不做激活，不用进行非线性变换
 
 
 model = Net()
 
 # construct loss and optimizer
+# 使用交叉熵损失函数 (CrossEntropyLoss <==> LogSoftmax + NLLLoss)
 loss_fn = torch.nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
