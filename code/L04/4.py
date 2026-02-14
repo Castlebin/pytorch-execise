@@ -6,10 +6,9 @@
 
 import torch
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib_cn import matplotlib_chinese
+from matplotlib_cn import matplotlib_util
 
-matplotlib_chinese.enable_matplotlib_chinese()
+matplotlib_util.enable_chinese()
 
 
 # 训练数据
@@ -48,7 +47,7 @@ for epoch in range(epochs):
         # 计算平方误差
         loss = loss_fn(y_pred, y)
 
-        # 反向传播，计算梯度
+        # 反向传播，计算梯度 (grad)
         loss.backward()
 
         # 更新 w 的值，学习率 lr=0.01
