@@ -51,10 +51,10 @@ class Model(nn.Module):
         return out.view(-1, self.hidden_size)
 
 
-net = Model(input_size, hidden_size, batch_size, num_layers=1)
+net = Model(input_size, hidden_size, batch_size, num_layers)
 
 # %% 3. 定义损失函数和优化器
-loss_fn = nn.CrossEntropyLoss()  # 交叉熵损失函数 (有 SoftMax，常用语多分类)
+loss_fn = nn.CrossEntropyLoss()  # 交叉熵损失函数 (有 SoftMax，常用于多分类)
 optimizer = torch.optim.Adam(net.parameters(), lr=0.05)  # Adam 优化器
 
 # %% 4. 模型训练
