@@ -11,6 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from dl_d2l.util import colab_util
 from dl_d2l.util import device_util
+from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 base_data_dir = colab_util.get_base_data_dir()
@@ -41,8 +42,8 @@ print(f"测试数据集大小: {len(test_dataset)}，样本形状：{test_datase
 
 # 4. 创建 DataLoader
 batch_size = 64
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1000, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
 
 
 # %% 第二步：使用 Matplotlib 可视化原始数据
@@ -185,7 +186,7 @@ for epoch in range(1, epochs + 1):
     start_time = time.time()
     train(model, device, train_loader, optimizer, epoch)
     print(f'epoch {epoch + 1}, train cost time: {time.time() - start_time} s, device: {device}')
-    
+
     test(model, device, test_loader)
 
 
