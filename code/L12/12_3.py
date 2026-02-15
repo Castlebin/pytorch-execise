@@ -32,9 +32,8 @@ labels = torch.LongTensor(y_data).view(-1, 1)
 
 # %% 2. 定义模型，这里使用 RNNCell (不是直接用 RNN)
 class Model(nn.Module):
-    def __init__(self, input_size, hidden_size, batch_size):
+    def __init__(self, input_size, hidden_size):
         super(Model, self).__init__()
-        self.batch_size = batch_size
         self.input_size = input_size
         self.hidden_size = hidden_size
 
@@ -45,10 +44,10 @@ class Model(nn.Module):
         return hidden
 
 
-net = Model(input_size, hidden_size, batch_size)
+net = Model(input_size, hidden_size)
 
 # %% 3. 定义损失函数和优化器
-loss_fn = nn.CrossEntropyLoss()  # 交叉熵损失函数 (有 SoftMax，常用语多分类)
+loss_fn = nn.CrossEntropyLoss()  # 交叉熵损失函数 (有 SoftMax，常用于多分类)
 optimizer = torch.optim.Adam(net.parameters(), lr=0.1)  # Adam 优化器
 
 
